@@ -4,7 +4,7 @@ const app = express();
 const {applyAppRoutes} = require('./routes/index.routes');
 const db = require('./config/database.config');
 
-db.sequelize.sync({})
+db.sequelize.sync()
 .then((res)=>{
     
     console.log("Database Successfully Connected");

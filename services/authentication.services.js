@@ -25,7 +25,7 @@ const userAuthentication = async (req, res, reqBody) =>{
             let token = signJWTToken(user);
             if(token)
             {
-                user.token = token;
+                response.token = token;
             }
             response.user = user;
             response.success = true;
@@ -52,6 +52,7 @@ const userAuthentication = async (req, res, reqBody) =>{
     }
     return response;
 }
+
 
 const AuthenticationServices = {
     userAuthentication,

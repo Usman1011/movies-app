@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const moviesController = require('../controllers/movies.controller');
 
-router.post('/', (req,res)=>{
-    console.log("Movies ROute");
-    res.send("Success");
-})
+router.get('/', moviesController.getAllMovies);
+router.get('/:id',  moviesController.getMovieDetailsById);
+router.delete('/:id',  moviesController.deleteMovie);
+router.put('/',  moviesController.updateMovie);
+
+
 
 module.exports = router;

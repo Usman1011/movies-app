@@ -9,7 +9,7 @@ const signJWTToken = (user) => {
 const verifyJWTToken = async (token, req, res) => {
   return jwt.verify(token, "qwerty", (err, decoded) => {
     if (err) {
-      return ResponseUtils.sendError(res, req, {}, "Unauthorized!", 401);
+      return false
     }
 
     req.user = decoded.user;
