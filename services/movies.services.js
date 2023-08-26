@@ -7,7 +7,7 @@ const {
     updateMovieById
 } = require('../database/movies.db');
 const axios = require('axios');
-const {getAllCharacters, getAllPlanets} = require('../utils/http-utils');
+const {getAllCharacters, getAllPlanets, getAllStarships} = require('../utils/http-utils');
 
 const getAllMovies = async (reqbody) =>{
     console.log("getAllMovies Service");
@@ -94,18 +94,39 @@ const getMovieDetails = async (id) =>{
 
         if(Object.keys(movie).length) {
 
-            let res = await axios.get(movie.url);
+            try {
+                let res = await axios.get(movie.url);
 
-            console.log("MOVIE INFO:" ,res.data);
-            let {characters, planets} = res.data;
+                console.log("MOVIE INFO:" ,res.data);
+                let charactersUrl = res.data.characters;
+                let planetsUrl = res.data.characters;
+                let starshipsUrl = res.data.starships;
 
-            characters = await getAllCharacters(res.data.characters);
-            planets = await getAllPlanets(res.data.planets)
-            movie.characters = characters;
-            movie.planets = planets;
 
-            response.success = true;
-            response.data = movie;
+                let characters = await getAllCharacters(charactersUrl);
+                let planets = await getAllPlanets(planetsUrl)
+                let starship = await getAllStarships(starshipsUrl);
+                movie.characters = characters;
+                movie.planets = planets;
+                movie.starship = starship;
+
+                if(movie?.url)
+                    delete movie.url
+                response.success = true;
+                response.data = movie;
+            }
+            catch(error)
+            {
+                if(error.code === "ECONNREFUSED")
+                {
+                    response.success = true;
+                    response.message = "Could not connect to external source for extra details"
+                    response.data = movie;
+                }
+                else {
+                    throw error;
+                }
+            }
         }
         else {
             response.success = false;

@@ -2,11 +2,11 @@ const Sequelize = require("sequelize");
 const CryptoJS = require("crypto-js");
 
 const sequelize = new Sequelize(
-  'movies-DB',
-  'sa',
-  '123',
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-  host: 'localhost',
+  host: process.env.DB_HOST || 'localhost',
   dialect: 'mssql',
   dialectOptions: {
     options: {
@@ -17,6 +17,7 @@ const sequelize = new Sequelize(
   logging: false,
   }
 );
+
 
 
 

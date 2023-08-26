@@ -1,6 +1,7 @@
 const { response } = require('express');
 const {users} = require('../models/user');
-const {signJWTToken} = require('../utils/jwt-utils');
+const {signJWTToken, getAccessToken} = require('../utils/jwt-utils');
+const {getUserByUserName} = require('../database/users.db');
 
 const userAuthentication = async (req, res, reqBody) =>{
     let response = {
@@ -53,9 +54,53 @@ const userAuthentication = async (req, res, reqBody) =>{
     return response;
 }
 
+const userRegister = async (req, res, reqBody) => {
+    let response = {
+        success: false
+    }
+    console.log("userAuthentication userRegister:");
+    try {
+        let user = {
+            userName: reqBody?.userName, 
+            password: reqBody?.password
+        };
+
+        let userRegistered =  await userExists(user.userName);
+        if(!userRegistered)
+        {
+            await users.create(user);
+
+            response.success = true;
+            response.message = "User Successfully Registered"
+        }
+        else
+        {
+            response.success = false;
+            response.message = "A User With This Username Already Exists"
+        }
+
+    }
+    catch(error)
+    {
+        console.log("Error Creating User: ", error.message);
+        response.success = false;
+        response.message = "Internal Server Error"
+        throw error;
+    }
+    return response
+}
+
+const userExists = async (userName) => {
+    console.log("USERNAME: ", userName);
+    let existingUser = await getUserByUserName(userName);
+    console.log("EXISTING: ", existingUser);
+    return existingUser ? true : false
+}
+
 
 const AuthenticationServices = {
     userAuthentication,
+    userRegister
   };
   
   module.exports = AuthenticationServices;
