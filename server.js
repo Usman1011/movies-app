@@ -1,4 +1,6 @@
 const express = require('express');
+const dotenv = require("dotenv");
+dotenv.config();
 const port = 4001;
 const app = express();
 const {applyAppRoutes} = require('./routes/index.routes');
